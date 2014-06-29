@@ -1,0 +1,204 @@
+<html>
+<head>
+
+</head>
+
+<body>
+<h1>JSON parcer test</h1>
+<script type="text/javascript" src="spec/JSONparcer.js">
+
+/*
+
+
+var JSON.parcer = function(source, reviver) { //source is the source JSON text, reviver is a function(key, value) to apply on every object before returning object
+	text = source;
+	at = 0; (where starting)
+	ch ' '; (initialize 'ch' varable by assigning it a blank space, so the first time value runs, the white function will run next and fetch the first actual character in the string)
+	result = value();
+	white();
+	if(ch) { - if there's a 'ch' after a result obtained, there is a problem with JSON syntax (something exists after proper JSON closing syntax)
+		trigger error
+	}
+
+	return (if there is a reviver function, will recursively walk the new structure and pass each name/value pair to the reviver function for possible transformation, if there is not a reviver function just return the result variable), starts with a temporary boot object that holds the result in an empty key. 
+
+		function walk(holder, key) {
+			- declare variables k, v and initialize value = holder[key] - since walk function self executes at the end with ({'': result}, ''), value initialized to result and holder is object: {'' : result}
+			- if(value && typeof value === 'object') { - if there is a value and the type of value is an object (since retriever only works on objects)
+				- for(k in value) { iterate through keys in value
+					if()
+
+	
+				}
+	
+			}
+	
+		}
+
+	}
+
+
+
+	value() { function - parse JSON value (could be object, array, string, number, word)
+		
+		white() - so skips white space and both assigns the 'ch' variable to the next actual character in the source text (not a blank space) and also returns that 'ch' variable
+
+		switch statement with the 'ch' variable, if it's a a '{' runs object(), if it's a '[' runs array() if it's a '"' runs string(), if it's a '-' runs number() and defaults to if the 'ch' is greater than or equal to 0 and less than or equal to 9 then run number(), if not run word()
+
+	}
+
+	white() { function
+
+		while loop that while the 'ch' variable has a value and is a blank space (' ') execute next() function
+
+	}
+
+	next(c) { function
+	
+		if there is a 'c' parameter, check to make sure 'c' equals 'ch' varable, if it doesn't throw an error
+
+		assign 'ch' to the text.charAt(at) (assign 'ch' to the current character in the source text)
+		increment at by one (a += 1)
+		return 'ch' varable
+
+	}
+
+
+	object() { function to parse object values
+		- declare var, and initialize object = {} variables (empty object variable will be returned if function runs error free)
+		- checks to make sure 'ch' === '{', if so runs next('{') to set 'ch' to the next character
+		- then it runs white() to skip any blank spaces.
+		- then if statement which checks if 'ch' === '}', if so it returns the object (which is empty)
+
+		- while loop (while(ch)) {
+			- key = string() - key is the returned string value variable returned from running the string() function
+			- white() run to skip any white spaces, the next character should be ':'
+			- next(':') run - the next valid charater will be ':', afterwhich value information present
+			- object[key] = value()
+		
+		}
+
+	}
+
+	string() { function to parse a string value
+
+		- declare variables hex, i, string = '', uffff
+		- if('ch' === '"') 'ch' is equal quotation marks, runs while loop, otherwise triggers error()
+			- while(next()) { - next keeps returning character and changing 'ch' to next character
+				- if 'ch' is '"' then return string (closing quotation mark found)
+				- else if ('ch' === '\\') character is now backslash next character is escaped
+					-run next() - to get the escaped character, 
+						- if 'ch' now 'u' - it is a 4 hexadecimal digit, process next four and add to string
+						- if 'ch' is in the escapee object (typeof escapeed[ch] === 'string') then add to string the value of escapee[ch]
+						- else, break, which goes to next else statement below (adds ch to text string)
+				- else - string += ch (string just concatenates the current 'ch' and while loop continues)
+
+			}
+	}
+
+
+	value() {  function to parse a JSON value (could be an object, array, string, or number)
+
+		- white() run to skip all blank empty character spaces
+		- switch(ch) { - switch statement with first valid 'ch'
+			- depending on 'ch' the appropriate function is run for the JSON value and the result of that function is returned (e.g. object, array, number, or string)
+		}
+
+	}
+
+	array() { function to parse an array value
+
+		- declare and initialize array = [] variable (empty array variable till be populated and returned at end of function)
+
+		- if('ch'  === '[') - it's a JSON array, - if not, error triggered
+		- next('[') - skip the '[' character and any blank spaces (white() is run) to get to the array value
+		- checks to see if it's an empty array (if ch === ']') - just return an empty array
+		- run while(ch) loop
+			- array.push(value()) - will run value function to see what the array value is for that index, and depending on what the value is will run the appropriate function to return that value (have it pushed into that array 
+			index)
+			- white() run to skip any blank spaces
+			- if('ch' === ']') run to see if array value closed and complete, if so returns array variable
+			- next(',') run to skip comma and then white() run to skip any blank spaces, and loop continues 
+
+	}
+
+	number() { function to Parase a number value
+		- declare var number, and declare and initialize string=''
+		- if ('ch' === '-')
+			- string = '-' (number will be a negative value)
+			- next('-') - to get next 'ch' after '-'
+		- while loop (ch >= '0' && ch <= '9') { (add/concatenate all numbers to string)
+			concatenate string with 'ch' (string += ch;)
+			next()
+		}
+		- if(ch === '.') { - next 'ch' a decimal point, add decimal point to string and all numbers after it
+			- concatenate a decimal point to the string (string =+ '.')
+			while(next() && ch >='0' && ch <='9') { - while there is a 'ch' and it's a number
+				- concatenate 'ch' to string
+			}
+		}
+
+		- if(ch === 'e' || ch === 'E') {  There is an exponent
+			- concatenate ch to string 
+			- get next ch (next())
+			- check to see if there is a negative or positive ('-' || '+')
+				- if so concatenate ch to string and get next() character
+ 			- while loop to concatenate all remaining numbers to string
+		}
+		number = +string (use unary plus operand to convert string variable to Number type)
+		- if(isNaN(number)) - if number is not a number trigger error, otherwise return number
+
+	}
+
+	word() { function to return special value null or booleans (true or falue)
+
+		- just a switch statement on 'ch'
+			- if case 't'
+				- run next('t'), next('r'), next('u'), next('e')
+				- all next run successfully, return true
+			- if case 'f'
+				- run next('f'), next('a'), next('l'), next('s'), next('e')
+				- all next run successfully, return false
+			- if case 'n'
+				- run next('n'), next('u'), next('l'), next('l')
+				- all next() run successfully, return null
+		
+		- trigger error if switch statement no successful (value is not null, true, or false)
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+
+</script>
+
+<script type="text/javascript" src="spec/notes.js"></script>
+</body>
+
+</html>

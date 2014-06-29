@@ -1,8 +1,4 @@
-// test cases are described in fixtures.js
-describe('stringifyJSON', function(){
-  it('should match the result of calling JSON.stringify', function(){
-
-    // stringifyJSON function - should equal result of calling JSON.stringify(obj)
+ // stringifyJSON function - should equal result of calling JSON.stringify(obj)
     var stringifyJSON = function(value, replaces) {
 
       var string = '', // declare and initialize string variable (will contain JSON string from value)
@@ -15,20 +11,11 @@ describe('stringifyJSON', function(){
               message: m
             };
 
-          }, 
-
-          isEmpty = function(obj) { // helper function to check if object value is empty
-
-            for(key in obj) {
-              return false;
-            }
-            return true;
-
-          }, 
+          },  
 
           check_value = function(v) { // function to check the value of a variable, and run appropriate parcer on it
 
-        var type = typeof v;  // Get typeof v to run through switch statement
+        var type = typeof value;  // Get typeof v to run through switch statement
 
         switch(type) {
         case 'object':
@@ -59,7 +46,9 @@ describe('stringifyJSON', function(){
 
         default:
 
-          console.log('error!!');
+          break;
+
+          // error('Not recognized JSON value');
 
         }  // End of Switch Statement        
 
@@ -91,30 +80,20 @@ describe('stringifyJSON', function(){
           string += 'false';
         }
 
-
       },
 
       stringify_obj = function(v) {
 
-        var slice = true;
-
         var obj = v;
         string += '{';
-      
-        if(!_.isEmpty(obj)) {
-          for(key in obj) {
-            if(!(_.isFunction(obj[key]) || _.isUndefined(obj[key]))) {
-              string += '"' + key + '":';
-              check_value(obj[key]);
-              string += ',';
-              slice = true;
-            } else {
-              slice = false; // slice will be false if last obj[key] evaluated is a function or undefined
-            } 
-          }
-          if(slice) string = string.slice(0, -1); // to get rid of extra comma from for loop above
+        for(key in obj) {
+          string += '"' + key + '":';
+          check_value(obj[key]);
+          string += ',';
         }
+        string = string.slice(0, -1); // to get rid of extra comma from for loop above
         string += '}';
+
       },
 
       stringify_array = function(v) {
@@ -127,7 +106,7 @@ describe('stringifyJSON', function(){
             string += ',';
           };
           string = string.slice(0, -1); // to get rid of extra comma from the for loop
-        }
+        } 
         string += ']';
       }; // end of declaring variables
 
@@ -137,22 +116,3 @@ describe('stringifyJSON', function(){
 
       
     }  // End of stringifyJSON()
-
-    stringifiableObjects.forEach(function(test){
-      var result = stringifyJSON(test);
-      var expected = JSON.stringify(test);
-      expect(result).to.equal(expected);
-    });
-
-    unstringifiableValues.forEach(function(obj){
-      var result = stringifyJSON(obj);
-      var expected = JSON.stringify(obj);
-      expect(result).to.equal(expected);
-    });
-
-    console.log('hello');
-
-  });
-
-
-});
