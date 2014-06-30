@@ -1,20 +1,66 @@
-var string_recursive = function(string) {
+var getElementsByClassName = function(string) {
 
-	var return_string, at = 0;
+	var test;
 
-	function inside_recursive(st_var, at) {
-		var char_ret;
-		var new_str = st_var;
-		var at_char = at;
-		if(at < string.length) {
-			 char_ret = string.charAt(at_char);
-			 at_char += 2;
-			 inside_recursive(new_str, at_chat);
+	var element = document.body;
+
+	var ret_arr = []; // empty arrary to populate with elements that have classes in the string
+
+	var classes = string.split(' '); // split string into array populated with each class to match
+	var classes_length = classes.length;
+
+	var matchclass = function(elem) {
+
+		var elem_classes;
+
+		if(elem.classList) {
+			elem_classes = elem.classList;
+		} else {
+			elem_classes = undefined;
 		}
-		return char_ret;
-	}
 
-	return_string = inside_recursive(string);
-	return return_string;
+		var child_nodes = elem.childNodes;
+
+		if(elem_classes != undefined || elem_classes != null || child_nodes.length > 0) { //If element variable has classes or child nodes
+
+			// Check to see if classes in element match the list of classes to be matched
+			if(_.intersection(classes, elem_classes).length === classes_length) { 
+				ret_arr.push(elem);
+			}
+
+			if(child_nodes.length > 0) {  // Element has child nodes to check
+
+				_.each(child_nodes, function(value) {
+
+					matchclass(value);
+				});
+
+			}
+		} 
+
+		
+	} // End of matchclass()
+
+
+	console.log('works!');
+	matchclass(element);
+
+	return ret_arr;
+
 
 }
+
+/* getElementsByClassName(string) - accepts a string of classes and returns an array like object of all child elements which
+ have all of the given class names
+
+*/
+
+/* document.body - returns the <body> element of the current document
+*/
+
+/* element.childNodes - returns an array of all of the child nodes for that element
+
+   element.classList - returns a token list of the class attributes of the element
+
+
+*/
